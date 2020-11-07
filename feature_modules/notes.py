@@ -1,7 +1,8 @@
 # Class creates the Notes feature once instantiated
-
 # Allows user to create and edit notes to use to help throughout the day
-# The memory value is stored in the config.py file so that notes persists during the applications entire session
+
+import textwrap  # textwrap module is used to nicely wrap long text to multiple lines
+import config  # config module used to store note data and gives access to global styling
 
 
 class Notes:
@@ -20,9 +21,9 @@ class Notes:
 
     # Method starts off the notes feature, requesting user input
     def notes_start(self):
-        while self.is_running:  # when while loop breaks, we return to the main module
-            print("\nType the first number of your calculation")
-            print(self.notes)
+        #while self.is_running:  # when while loop breaks, we return to the main module
+        print("\nCurrent saved notes:")
+        self.output_notes()
             #self.first_input = self.input_check()
             # input_check method checks for numbers, keywords and memory functions
            #self.stage = 1  # get the first number input
@@ -45,6 +46,22 @@ class Notes:
                # print("Goodbye from the calculator!")
                # break
 
+    # method neatly outputs all of the notes to the user
+    def output_notes(self):
+        for title, note in self.notes.items():
+            title_string = title  # variable holds the title string
+            note_length = len(note)  # get the length of the note text
+            print(config.Style.bold, config.Style.underline)  # make title bold and underlined
+            print("Title:", title_string)
+            print(config.Style.end, config.Style.purple)
+            if note_length > 100:  # check to see if note content is longer than 100 character
+                # if longer than 100 characters we want to line break so that the notes look nice in the console
+                print(textwrap.fill(note, 100))  # wrap the note every 100 characters to a new line
+                print("-" * 100)  # draw a divide to differentiate between the different notes
+            else:
+                print(note)  # print the note
+                print("-" * note_length)  # draw a divide to differentiate between the different notes
+
 
     # method sanitises the user input, checking to see if it's a number
     def input_check(self):
@@ -61,9 +78,4 @@ class Notes:
 
     # method saves the memory value into the config.py file
     def memory_save(self):
-        import sys
-        # use sys module to add ".." in front of module import file path allowing import from parent directory
-        sys.path.append("..")
-        # sys.path gives access to the PYTHONPATH set in the current system. ".." goes up one directory
-        import config  # config imported from ../config.py due to sys.path.append("..")
         config.memory_value = self.memory_value  # memory_value variable in config.py given current memory value

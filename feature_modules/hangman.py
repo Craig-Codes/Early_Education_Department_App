@@ -1,15 +1,15 @@
 # Class creates the hangman game once instantiated.
 # Users are given 5 attempts to guess a random word
-# Word list is passed as an argument from main.py, and stored in config.py
 
 import random  # random module used to generate a random entry from a list of words
+import config  # config module used to retrieve word list and gives access to global styling
 
 
 class Hangman:
-    def __init__(self, word_list):
+    def __init__(self):
         # variable contains program on or off state, always start as True to indicate menu running
         self.is_running = True
-        self.word_list = word_list  # import the word list from the config.py file
+        self.word_list = config.hangman_word_list  # import the word list from the config.py file
         self.word = random.choice(self.word_list)  # string holds the current word to guess
         self.word_letters = list(self.word)  # list holds a list of all the random words letters
         self.guessed_word = ""  # string holds the users correct guesses

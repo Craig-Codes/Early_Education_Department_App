@@ -1,14 +1,13 @@
 # Class creates the calculator once instantiated
 # Allows user to calculate maths problems ( +, -, /, *), along with the storage and retrieval of a memory value
 
-# The memory value is stored in the config.py file so that it persists during the applications entire session, with the
-# value being stored if the calculator is closed then opened again at a later time during the applications session
+import config  # config module used to store calculator memory data and gives access to global styling
 
 
 class Calculator:
 
     # when class is instantiated, set the following variable values and run the calculator
-    def __init__(self, memory_value):
+    def __init__(self):
         self.is_running = True  # variable controls the start loop and keeps user in the calculator until exit keyword
         print("\n🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅲🅰🅻🅲🆄🅻🅰🆃🅾🆁 \U0001F5A9")  # give user starting instructions
         print('\nTo return to the main menu just type "exit" at any time')
@@ -21,8 +20,7 @@ class Calculator:
         self.total = None  # variable used to store the sums total
         # stage is used to determine which input stage calculator is on,
         self.stage = 1   # required for the "help" functionality and memory functions
-        self.memory_value = memory_value  # get the current memory value from config.py (via main.py) on instantiation
-        # stage is used to determine which input stage the calculator is on, for the 'help' and memory functionality
+        self.memory_value = config.memory_value  # get the current memory value from config.py on instantiation
         self.calculator_start()  # start the calculator
 
     # Method starts off the calculator, requesting user inputs
@@ -157,10 +155,5 @@ class Calculator:
 
     # method saves the memory value into the config.py file
     def memory_save(self):
-        import sys
-        # use sys module to add ".." in front of module import file path allowing import from parent directory
-        sys.path.append("..")
-        # sys.path gives access to the PYTHONPATH set in the current system. ".." goes up one directory
-        import config  # config imported from ../config.py due to sys.path.append("..")
         config.memory_value = self.memory_value  # memory_value variable in config.py given current memory value
-
+        # this allows the memory value to be correct if calculator is re-entered

@@ -2,6 +2,7 @@
 # Allows user to input a sentence and get the correctly formatted sentence back
 
 import random  # random module used to generate a random entry from a tuple of numbers
+import config  # config module gives access to global styling
 
 
 class HigherLower:

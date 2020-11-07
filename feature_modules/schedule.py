@@ -1,14 +1,18 @@
 # Class creates the users schedule once instantiated
 # User can select a period and edit it to reflect a schedule change
 
+import config  # config module used to store schedule data and gives access to global styling
+
+
 class Schedule:
-    def __init__(self, period1, period2, period3, period4, period5, period6):  # set variables when class initialised
+    def __init__(self):  # set variables when class initialised
         self.is_running = True  # variable contains program on or off state, always start as True
         self.stage = 1  # variable used to provide tailored help when user requests it
 
-        # schedule is stored as a dictionary. Initially created using arguments from the main.py script
-        self.schedule = {"Period 1:": period1, "Period 2:": period2, "Period 3:": period3, "Period 4:": period4,
-                         "Period 5:": period5, "Period 6:": period6}
+        # schedule is stored as a dictionary. Initially created using arguments from the config.py script
+        self.schedule = {"Period 1:": config.schedule[0], "Period 2:": config.schedule[1],
+                         "Period 3:": config.schedule[2], "Period 4:": config.schedule[3],
+                         "Period 5:": config.schedule[4], "Period 6:": config.schedule[5]}
         # list of all possible class choices stored in a tuple
         self.class_list = ("Maths", "Science", "History", "Geography", "Art", "PE", "English", "Free Period")
 
@@ -92,10 +96,4 @@ class Schedule:
     # method changes the global schedule list to allow data to persist across modules
     def edit_global(self, period_number, new_class):
         # edit the variable in config.py to allow schedule to save across modules so schedule upto date if re-entered
-        # this config.schedule list is used to create period schedule when Schedule class is instantiated
-        import sys
-        # use sys module to add ".." in front of module import file path allowing import from parent directory
-        sys.path.append("..")
-        # sys.path gives access to the PYTHONPATH set in the current system. ".." goes up one directory
-        import config  # config imported from ../config.py due to sys.path.append("..").
         config.schedule[period_number - 1] = self.class_list[new_class - 1]  # edit the global list with updated class

@@ -1,7 +1,6 @@
 # Main.py contains the menu system and controls overall application state, calling in feature modules when required
 
-# from feature_modules import styles  # import the styles module for font manipulation
-import config  # config/py holds global variables which can be edited and shared across modules
+import config  # config module used for access to global styling and shared global variables
 
 
 # class contains the menu and all of the methods necessary to prompt user and open the applications features
@@ -53,16 +52,14 @@ class Menu:
         if self.program_state == "1":
             # import the calculator module and start it - only importing what we need when we need it
             from feature_modules import calculator
-            # create a new instance of the calculator (enter the calculator.py script) - pass in the config.py
-            # memory value as a starting value, which is then updated throughout the session
-            calculator.Calculator(config.memory_value)
+            # create a new instance of the calculator (enter the calculator.py script)
+            calculator.Calculator()
         elif self.program_state == "2":
             # import the daily schedule module and start it - only importing what we need when we need it
             from feature_modules import schedule
             # create a new instance of the schedule (enter the schedule.py script), using global variables from the
             # config.py script to share data
-            schedule.Schedule(config.schedule[0], config.schedule[1], config.schedule[2], config.schedule[3],
-                              config.schedule[4], config.schedule[5])
+            schedule.Schedule()
         elif self.program_state == "3":
             # import the spell checker module and start it
             from feature_modules import spell_checker
@@ -75,15 +72,13 @@ class Menu:
         elif self.program_state == "5":
             # import the hangman module and start it
             from feature_modules import hangman
-            # create a new instance of the hangman game (enter hangman.py script) - use the word_list as an argument
-            hangman.Hangman(config.hangman_word_list)
+            # create a new instance of the hangman game (enter hangman.py script)
+            hangman.Hangman()
         elif self.program_state == "6":
             # import the hangman module and start it
             from feature_modules import quiz
-            # create a new instance of the quiz (enter quiz.py script) - pass in arguments form config.py
-            quiz.Quiz(config.maths_questions, config.maths_answers, config.maths_correct_answers,
-                      config.history_questions, config.history_answers, config.history_correct_answers,
-                      config.geography_questions, config.geography_answers, config.geography_correct_answers)
+            # create a new instance of the quiz (enter quiz.py script)
+            quiz.Quiz()
         elif self.program_state == "7":
             # import the notes module and start it
             from feature_modules import notes

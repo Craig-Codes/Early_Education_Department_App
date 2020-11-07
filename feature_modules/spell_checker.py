@@ -1,5 +1,9 @@
 # Class creates the spell checker once instantiated.
 # Allows user to input a sentence and get the correctly formatted sentence back
+
+import config  # config module used to store calculator data and gives access to global styling
+
+
 class Checker:
     def __init__(self):  # set variables when class initialised
         self.is_running = True  # variable contains program on or off state, always start as True

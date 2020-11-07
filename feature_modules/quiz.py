@@ -2,29 +2,28 @@
 # Allows user to select a subject to take a quiz on, then provides five randomly ordered questions and a score
 
 import random  # import the random module - used to randomise question order to increase replay value
+import config  # config module used to get question data and gives access to global styling
 
 
 class Quiz:
     # set variables when class initialised, taking arguments from the config.py file, via main.py
-    def __init__(self, maths_questions, maths_answers, maths_correct,
-                 history_questions, history_answers, history_correct,
-                 geo_questions, geo_answers, geo_correct):
+    def __init__(self):
 
         self.is_running = True  # variable contains program on or off state, always start as True
         self.stage = 1  # stage is used to determine which input stage quiz is on, for the 'help' functionality
 
         # arrays store the input from the config.py file, allowing the quiz to be easily modified and updated
-        self.question_bank_maths = maths_questions
-        self.answer_bank_maths = maths_answers
-        self.correct_maths = maths_correct
+        self.question_bank_maths = config.maths_questions
+        self.answer_bank_maths = config.maths_answers
+        self.correct_maths = config.maths_correct_answers
 
-        self.question_bank_history = history_questions
-        self.answer_bank_history = history_answers
-        self.correct_history = history_correct
+        self.question_bank_history = config.history_questions
+        self.answer_bank_history = config.history_answers
+        self.correct_history = config.history_correct_answers
 
-        self.question_bank_geography = geo_questions
-        self.answer_bank_geography = geo_answers
-        self.correct_geography = geo_correct
+        self.question_bank_geography = config.geography_questions
+        self.answer_bank_geography = config.geography_answers
+        self.correct_geography = config.geography_correct_answers
 
         self.current_question_bank = []  # empty placeholder array used to store questions
         self.current_answer_bank = []  # empty placeholder array used to store answers

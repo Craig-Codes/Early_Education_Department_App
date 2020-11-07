@@ -63,8 +63,10 @@ geography_correct_answers = [["4"],
                              ["1"]]
 
 # to-do list saved entries - stored in a dictionary, starting as empty when user starts the application
-notes_dict = {"Test": "First Note!",
-              "Test2": "Second Note!"}
+notes_dict = {"Demo Note": "Hello, i'm your first note, use me as a template!",
+              "Test2": "Second Note!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                       "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                       "!!!!!!!!!!!!!!!!!!"}
 
 
 # Class contains colours and styles to be used to make the terminal output more exciting for children
