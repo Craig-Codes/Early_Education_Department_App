@@ -85,10 +85,10 @@ class Menu:
                       config.history_questions, config.history_answers, config.history_correct_answers,
                       config.geography_questions, config.geography_answers, config.geography_correct_answers)
         elif self.program_state == "7":
-            # import the hangman module and start it
-            from feature_modules import hangman
-            # create a new instance of the hangman game (enter hangman.py script) - use the word_list as an argument
-            hangman.Hangman(config.hangman_word_list)
+            # import the notes module and start it
+            from feature_modules import notes
+            # create a new instance of the notes module - use the notes_dict as an argument
+            notes.Notes(config.notes_dict)
         self.program_state = "menu"  # once finished in module return to the menu keeping the while loop going
 
 
