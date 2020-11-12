@@ -7,17 +7,27 @@ import config  # config module used to store calculator data and gives access to
 class Checker:
     def __init__(self):  # set variables when class initialised
         self.is_running = True  # variable contains program on or off state, always start as True
-        self.sentence = "A structure which humans occupy"  # sentence used to check user types in correct sentence
+        self.sentence = ""  # sentence used to store the sentence a user inputs
         # dictionary of possible word entries and their corresponding corrections
         # this prototype takes into account some variations of case sensitivity - this could easily be expanded on
         self.words_to_check = {"structure": "building", "STRUCTURE": "BUILDING", "Structure": "Building"}
 
-        print(
-            "🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅳🅸🅵🅵🅸🅲🆄🅻🆃 🆆🅾🆁🅳 🅲🅷🅴🅲🅺🅴🆁")  # give user starting instructions
+        print("🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅳🅸🅵🅵🅸🅲🆄🅻🆃 🆆🅾🆁🅳 🅲🅷🅴🅲🅺🅴🆁".center(64))  # give user starting instructions
         print('\nTo return to the main menu just type "exit" at any time')
         print('To get help just type "help" at any time')
 
         self.checker_start()  # trigger the checker_start method to provide user instructions
+
+    # method is used to start the application, and guide the user through
+    def checker_start(self):
+        while self.is_running:  # when this while loop breaks, we return to the main module
+            print("\nType in the sentence you want to check for difficult words and have corrected")
+            print('**** For this prototype please type "A structure which humans occupy" ****')
+            sentence_input = self.input_check()
+            if sentence_input.lower() == "exit":  # check for the "exit" keyword.
+                print("Goodbye from the difficult word checker! \U0000263B")
+                break  # if "exit" found we break the loop, leaving this feature module
+            self.word_swap(sentence_input)  # method is called to output corrected sentence to user
 
     # method checks to ensure correct string is entered by user
     def input_check(self):
@@ -36,7 +46,7 @@ class Checker:
         if user_input.lower() == "exit":
             self.is_running = False  # statement breaks input while loops
         elif user_input.lower() == "help":  # if/else statement controls tailored help messages
-            print("\nYou are in the spell checker! Type in the sentence you would like to have checked")
+            print("\nYou are in the difficult word checker! Type in the sentence you would like to have checked")
         else:
             print("\nPlease try typing in the sentence again 👍")
 
@@ -60,16 +70,9 @@ class Checker:
             print("\nUnable to find any words to swap, well done!")
         else:
             print("\nYou were close, keep up the good work! The correct wording is:")
-            print(sentence)
-            print("The word which can be changed is " + original_word + " for " + modified_word)
-
-    # method is used to start the application, and guide the user through
-    def checker_start(self):
-        while self.is_running:  # when this while loop breaks, we return to the main module
-            print("\nType in the sentence you want to check for difficult words and have corrected")
-            print('**** For this prototype please type "A structure which humans occupy" ****')
-            sentence_input = self.input_check()
-            if sentence_input.lower() == "exit":  # check for the "exit" keyword.
-                print("Goodbye from the difficult word checker!")
-                break  # if "exit" found we break the loop, leaving this feature module
-            self.word_swap(sentence_input)  # method is called to output corrected sentence to user
+            print(sentence)  # print the corrected sentence
+            print("The word which can be changed is " +
+                  config.Style.bold + config.Style.underline + original_word + config.Style.end + config.Style.purple +
+                  " for " + config.Style.bold + config.Style.underline +
+                  modified_word + config.Style.end + config.Style.purple)
+            #  sentence underlines and bolds the swapped words so user can easily see what was changed

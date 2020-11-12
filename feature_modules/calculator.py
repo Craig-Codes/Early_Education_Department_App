@@ -9,7 +9,8 @@ class Calculator:
     # when class is instantiated, set the following variable values and run the calculator
     def __init__(self):
         self.is_running = True  # variable controls the start loop and keeps user in the calculator until exit keyword
-        print("\n🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅲🅰🅻🅲🆄🅻🅰🆃🅾🆁 \U0001F5A9")  # give user starting instructions
+        print("🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅲🅰🅻🅲🆄🅻🅰🆃🅾🆁 \U0001F5A9".center(60))  # give user starting instructions
+        # UNICODE Icon is used to draw a calculator to add visual interest for children
         print('\nTo return to the main menu just type "exit" at any time')
         print('To get help just type "help" at any time')
         print('To get information about the memory functions type "memory" at any time')
@@ -31,11 +32,11 @@ class Calculator:
             # input_check method checks for numbers, keywords and memory functions
             self.stage = 1  # get the first number input
             if self.first_input == "exit":  # if input_check method returns "exit", break the loop returning to menu
-                print("Goodbye from the calculator!")
+                print("Goodbye from the calculator! \U0000263B")
                 break
 
             self.stage = 2  # get the operator
-            print("Type an operator ( plus(+), minus(-), multiply(*), divide(/))")
+            print("Type an operator - plus(+), minus(-), multiply(*) or divide(/)")
             self.operator = self.operator_check()
             # operator_check method checks for operators, keywords and memory functions
             if self.operator.lower() == "exit":
@@ -52,9 +53,9 @@ class Calculator:
             self.stage = 4  # calculate the answer
             self.total = self.calculate()  # calculate the inputs
             # output the whole sum to the user, the int_check method is used to remove unnecessary decimal points
-            print("{} {} {} = {}"
-                  .format(self.int_check(self.first_input), self.operator,
-                          self.int_check(self.second_input), self.int_check(self.total)))
+            print(config.Style.bold + "\n{} {} {} = {}"
+                  .format(self.int_check(self.first_input), self.operator, self.int_check(self.second_input),
+                          self.int_check(self.total)) + config.Style.end, config.Style.purple)
 
     # method sanitises the user input, checking to see if it's a number
     def input_check(self):
@@ -105,7 +106,7 @@ class Calculator:
                 or user_input == "mr" or user_input == "mc":
             self.memory_functions(user_input)  # pass the user input into the memory_functions method
         else:
-            print("Please try typing a number, operator, or memory function again 👍")  # generic typo error message
+            print("Please try typing an input again, type 'help' for tailored assistance 👍")
 
     # method does the maths on the two given inputs and the operator
     def calculate(self):
@@ -146,9 +147,11 @@ class Calculator:
         elif memory_key == "mr":  # recall and display current memory value
             self.memory_value = float(self.memory_value)  # ensure memory_value is a float
             self.memory_value = self.int_check(self.memory_value)  # check to see if we can remove decimal places
-            print("\n==============================")
+            memory_value_length = len(str(self.memory_value))
+            # get the length of the memory value - used to create neat boundaries matching memory output length
+            print("\n-------------------------" + memory_value_length * "-")
             print("Current memory value is: {}".format(self.memory_value))
-            print("==============================\n")
+            print("-------------------------" + memory_value_length * "-" + "\n")
         elif memory_key == "mc":  # clear memory value back to zero
             self.memory_value = 0
             self.memory_save()  # method saves updated memory value into config.py file

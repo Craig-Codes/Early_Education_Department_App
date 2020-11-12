@@ -9,6 +9,7 @@ class Hangman:
     def __init__(self):
         # variable contains program on or off state, always start as True to indicate menu running
         self.is_running = True
+        self.replay = True  # variable used to control if user is asked if they want to retry the game
         self.word_list = config.hangman_word_list  # import the word list from the config.py file
         self.word = random.choice(self.word_list)  # string holds the current word to guess
         self.word_letters = list(self.word)  # list holds a list of all the random words letters
@@ -16,7 +17,7 @@ class Hangman:
         self.guessed_letters = []  # list holds all guessed letters
         self.guess_counter = 8  # variable holds the amount of guesses a user has left
 
-        print("\n🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅷🅰🅽🅶🅼🅰🅽 🅶🅰🅼🅴")  # give user starting instructions
+        print("🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🅷🅰🅽🅶🅼🅰🅽 🅶🅰🅼🅴".center(45))  # give user starting instructions
         print('\nTo return to the main menu just type "exit" at any time')
         print('To get help just type "help" at any time')
 
@@ -26,22 +27,23 @@ class Hangman:
     def hangman_start(self):
         while self.is_running:  # when this while loop breaks, we return to the main module
             self.word_mask()  # masks the characters in the word which the user hasn't guessed yet
-            print("\n====================================================\n")
+            print("\n-------------------------------------------------------\n")  # line divides guesses
             print("The word you are guessing is {}".format(self.guessed_word))
             print("You have {} guesses left".format(self.guess_counter))
-            print("You have already guessed these letters: {}".format(self.guessed_letters))
+            if len(self.guessed_letters) > 0:  # check to see if list has entries. If it doesnt dont show message
+                print("You have already guessed these letters: {}".format(self.guessed_letters))
 
             # while word is masked - loop the following actions!
             letter_guess = self.input_check()
             if letter_guess == "exit":  # check for the "exit" keyword.
-                print("Goodbye from the hangman game!")
+                print("Goodbye from the hangman game! \U0000263B")
+                self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                 break  # if "exit" found we break the loop, leaving this feature module
             self.guess_number(letter_guess)  # method checks if the letter is in the self.word variable
-            self.guessed_letters.append(letter_guess)
-            self.word_mask()
-            self.completed_check()
-        #  ask user if they want to play again- if yes game state is reset, if no, game exits
-        self.replay_check()
+            self.guessed_letters.append(letter_guess)  # add the guessed letter to the guessed letter list
+            self.word_mask()  # reveal correctly guessed letters in the guessed_word variable, everything else is a '*'
+            self.completed_check()  # method checks to see if word has been guessed correctly or all turns used
+        self.replay_check()  # ask user if they want to play again- if yes game state is reset, if no, game exits
 
     # method used to hide the word, making all unknown characters * symbols
     def word_mask(self):
@@ -79,17 +81,18 @@ class Hangman:
     # method checks to see if a user has won or lost the game, breaking the is_running while loop either way
     def completed_check(self):
         if self.word == self.guessed_word:
-            print("\n*** Congratulations you successfully guessed the word! ***")
+            print(config.Style.bold, "\n*** Congratulations you successfully guessed the word! ***",
+                  config.Style.end, config.Style.purple)  # winning message in bold
             self.is_running = False  # setting variable to false breaks the play loop
-        elif self.guess_counter == 0:  # if guessed more than 5 times player loses and game ends
-            print("\nYou didnt manage to guess the word this time!")
+        elif self.guess_counter == 0:  # if guessed more than 8 times player loses and game ends
+            print(config.Style.bold, "\n*** You didnt manage to guess the word this time! ***",
+                  config.Style.end, config.Style.purple)  # losing messaged in bold
             print("The word was {}".format(self.word))
-            self.is_running = False
+            self.is_running = False  # variable breaks the input loops
 
     # method checks to see if user wants to replay the game after its finished
     def replay_check(self):
-        selection = False  # local variable to control while loop, ensuring user makes a choice
-        while not selection:
+        while self.replay:
             print("\nWould you like to play again?")
             replay = input("Enter '1' for yes, '2' for no: ")
             if replay == "1":
@@ -102,8 +105,8 @@ class Hangman:
                 self.is_running = True  # re-enter the start loop
                 self.hangman_start()  # restart the game
             elif replay == "2" or replay.lower() == "exit":  # user wants to leave the game
-                print("Goodbye from the hangman game!")
-                selection = True
+                print("Goodbye from the hangman game! \U0000263B")
+                self.replay = False
                 # leaving the method will cause the script to end and put the user back to the main menu
             elif replay.lower() == "help":
                 print("\nYou are in the hangman game! Type in '1' to play again, or '2' to exit the game")

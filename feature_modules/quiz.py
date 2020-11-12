@@ -11,6 +11,7 @@ class Quiz:
 
         self.is_running = True  # variable contains program on or off state, always start as True
         self.stage = 1  # stage is used to determine which input stage quiz is on, for the 'help' functionality
+        self.replay = True  # variable used to control if user is asked if they want to retry quiz
 
         # arrays store the input from the config.py file, allowing the quiz to be easily modified and updated
         self.question_bank_maths = config.maths_questions
@@ -32,7 +33,7 @@ class Quiz:
         self.score_counter = 0  # variable stores number of correct answers
         self.questions_taken = 0  # variable stores number of questions user has attempted
 
-        print("\n🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🆁🅴🆅🅸🆂🅸🅾🅽 🆀🆄🅸🆉")  # give user starting instructions
+        print("🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🆃🅷🅴 🆁🅴🆅🅸🆂🅸🅾🅽 🆀🆄🅸🆉".center(45))  # give user starting instructions
         print('\nTo return to the main menu just type "exit" at any time')
         print('To get help just type "help" at any time')
         print("\nThe quiz covers topics you are currently learning in school.")
@@ -48,6 +49,7 @@ class Quiz:
             quiz_selection = self.input_check()  # input_check method checks for keywords and ensures correct user input
             if quiz_selection == "exit":  # check for the "exit" keyword.
                 print("Goodbye from the quiz! \U0000263B")
+                self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                 break  # if "exit" found we break the loop, leaving this feature module
 
             self.stage = 2  # stage 2 is the quiz stage
@@ -61,11 +63,11 @@ class Quiz:
                 question_answer = self.input_check()  # method used to get users question answer and check for keywords
                 if question_answer == "exit":  # check for the "exit" keyword.
                     print("Goodbye from the quiz! \U0000263B")
+                    self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                     break  # if "exit" found we break the loop, leaving this feature module
                 self.answer_check(random_number, question_answer)  # increment to score if correct
                 # remove question from arrays before we then fetch another random question
                 self.question_remove(random_number)
-                print("\n==============================================")  # divide to break up the text between rounds
                 self.completed_check()   # check to see if the quiz has finished rather than simply been exited
         self.replay_check()  # if user wants to play again, properties are reset and quiz restarts
 
@@ -87,10 +89,14 @@ class Quiz:
 
     # method outputs the question and possible answers to the user
     def question(self, random_number):
-        print("\n")
-        print(*self.current_question_bank[random_number])  # print question without brackets
+        # get the length of the question so we can use it to create a neat barrier from the last question
+        question = str(self.current_question_bank[random_number])  # get the question as a string
+        print("\n" + ("-" * (len(question) - 4)), config.Style.bold)
+        # new line for spacing and make title bold - divide to break up the text between rounds based on question length
+        print(*self.current_question_bank[random_number], config.Style.end,config.Style.purple)
+        # print question without brackets, and remove bold styling
         for answer in self.current_answer_bank[random_number]:
-            print(*answer)
+            print(*answer)  # print out each possible answer without brackets
 
     # method checks to see if user got the question right, incrementing to the counter if so
     def answer_check(self, random_number, user_answer):
@@ -118,6 +124,7 @@ class Quiz:
                 user_input = input(": ")
                 if user_input.lower() == "exit":
                     self.is_running = False  # statement breaks input while loops
+                    self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                     user_input = user_input.lower()  # .lower ensures the input is returned in correct format
                 elif user_input.lower() == "help":  # if/else statement controls tailored help messages
                     print("\nYou are in the revision quiz! type in a number to choose the quiz topic")
@@ -129,6 +136,7 @@ class Quiz:
                 user_input = input("\nEnter your answer (1-4): ")
                 if user_input.lower() == "exit":
                     self.is_running = False  # statement breaks input while loops
+                    self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                     user_input = user_input.lower()  # .lower ensures the input is returned in correct format
                 elif user_input.lower() == "help":  # if/else statement controls tailored help messages
                     print("\nYou are in the revision quiz! Choose your answer by typing its number (1-4)")
@@ -140,16 +148,18 @@ class Quiz:
 
     # method checks to see if a user has answered 5 questions, breaking the is_running while loop if so
     def completed_check(self):
-        if len(self.current_question_bank) == 0:
+        if len(self.current_question_bank) == 0:  # if zero, no questions are remaining
             print("\nWell done for taking the quiz!")
+            print(config.Style.bold)  # add bold styling to final score line
             print("***** Your score is {}/{} *****".format(self.score_counter, self.questions_taken))
+            print(config.Style.end, config.Style.purple)  # remove bold styling
             self.is_running = False  # break out of the start loop
+            self.replay = True  # ensure user is asked if they want to re try quiz
 
     # method checks to see if user wants to replay the game after its finished
     def replay_check(self):
-        replay_check = True
-        while replay_check:
-            print("\nWould you like to play again?")
+        while self.replay:
+            print("\nWould you like to try again?")
             replay = str(input("Enter '1' for yes, '2' for no: "))
             if replay == "1":  # if user wants to restart we need to reset game state and restart
                 self.score_counter = 0  # reset score counter back to zero
@@ -158,7 +168,8 @@ class Quiz:
                 self.quiz_start()  # restart the game
             elif replay == "2" or replay.lower() == "exit":  # user wants to leave the game
                 print("Goodbye from the quiz! \U0000263B")
+                self.is_running = False
                 # leaving the method will cause the script to end and put the user back to the main menu
-                replay_check = False
+                self.replay = False  # ensure user doesnt get asked to replay quiz at the end
             elif replay.lower() == "help":
                 print("\nYou are in the revision quiz! Type in '1' to try again, or '2' to exit the quiz")

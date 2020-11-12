@@ -1,4 +1,4 @@
-# Main.py contains the menu system and controls overall application state, calling in feature modules when required
+# Main.py contains the menu system and controls overall application state, instantiating feature modules when required
 
 import config  # config module used for access to global styling and shared global variables
 
@@ -9,14 +9,13 @@ class Menu:
         self.program_state = "menu"  # variable contains which feature is open and in use
         self.features = ("1. Calculator", "2. Daily Schedule", "3. Difficult Word Checker", "4. Higher or Lower",
                          "5. Hangman", "6. Quiz", "7. Notes")  # tuple containing all features
-        self.text_color = config.Style.purple  # variable contains the menus text colour
 
     # method provides the starting instructions to the user
     def menu_start(self):
         # Unicode characters used to make heading more interesting to children
-        print(self.text_color + config.Style.bold + config.Style.underline + "\n" +
-              "⟆𝜏Ꭿ⨍⨍𝖮ᖇᖱ⟆Ꮒ⫯ᖇ∈ ⋃ﬡ⫯ᨆ∈ᖇ⟆⫯𝜏Ⴘ ᕮᎯᖇ𝘭Ⴘ ᕮᕍυ⊂Ꭿ𝜏⫯𝖮ﬡ ↁ∈ᖰᎯᖇ𝜏ⲙ∈ﬡ𝜏".center(80) + config.Style.end)
-        print(self.text_color + "\nPlease use this application to help with your day to day school tasks "
+        print(config.Style.purple, config.Style.bold, config.Style.underline)  # style text - purple, bold, underlined
+        print("⟆𝜏Ꭿ⨍⨍𝖮ᖇᖱ⟆Ꮒ⫯ᖇ∈ ⋃ﬡ⫯ᨆ∈ᖇ⟆⫯𝜏Ⴘ ᕮᎯᖇ𝘭Ⴘ ᕮᕍυ⊂Ꭿ𝜏⫯𝖮ﬡ ↁ∈ᖰᎯᖇ𝜏ⲙ∈ﬡ𝜏".center(80), config.Style.end)
+        print(config.Style.purple, "\nPlease use this application to help with your day to day school tasks "
               + "\U0001F3EB")  # unicode school symbol used to add visual interest
         print('If at any time you need guidance on how to use this application, just type "help"')
         print('If you want to leave the application just type "exit"')
@@ -24,10 +23,10 @@ class Menu:
     # method starts a loop to get the user to select a feature
     def menu_display(self):
         while self.program_state == "menu":  # while program state is "menu", keep looping until user chooses a feature
-            print('\nChoose an activity from the bellow list by typing in its number:' + config.Style.bold)
+            print('\nChoose an activity from the bellow list by typing in its number:', config.Style.bold)
             print(*self.features, sep="\n")  # use * to remove parenthesis and separate by new line
-            self.program_state = str(input(config.Style.end + self.text_color + "\nEnter choice (1 - 7): "))
-            print(config.Style.end + self.text_color)  # remove bold and reset colour
+            self.program_state = str(input(config.Style.end + config.Style.purple + "\nEnter choice (1 - 7): "))
+            print(config.Style.end, config.Style.purple)  # remove bold and reset colour
 
             # if program_state is not a valid feature number
             if self.program_state in ("1", "2", "3", "4", "5", "6", "7"):
@@ -48,7 +47,8 @@ class Menu:
 
     # method controls the importing and opening of different app modules to give user access to feature modules
     def open_module(self, module):
-        self.program_state = module.lower()
+        self.program_state = module.lower()  # make any input lowercase to remove case sensitivity issues on keywords
+
         if self.program_state == "1":
             # import the calculator module and start it - only importing what we need when we need it
             from feature_modules import calculator
@@ -83,7 +83,7 @@ class Menu:
             # import the notes module and start it
             from feature_modules import notes
             # create a new instance of the notes module - use the notes_dict as an argument
-            notes.Notes(config.notes_dict)
+            notes.Notes()
         self.program_state = "menu"  # once finished in module return to the menu keeping the while loop going
 
 
