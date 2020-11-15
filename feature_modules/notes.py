@@ -6,24 +6,46 @@ import config  # config module used to store note data and gives access to globa
 
 
 class Notes:
+    """ Class creates the notes feature. Users are able to add, edit and delete notes """
     # when class is instantiated, set the following variable values and start the notes feature
     def __init__(self):
         self.is_running = True  # variable controls the start loop and keeps user in the notes feature
-        self.notes = config.notes_list  # variable gets the notes list from the config.py file
+        self.notes = []  # variable stores retrieved notes from the notes.txt file
         print("🆆🅴🅻🅲🅾🅼🅴 🆃🅾 🅽🅾🆃🅴🆂".center(50))  # give user starting instructions
         print('\nTo return to the main menu just type "exit" at any time')
         print('To get help just type "help" at any time')
 
         # stage is used to determine which input stage calculator is on,
         self.stage = 1  # required for the "help" functionality and memory functions
+        self.import_notes()
         self.notes_start()  # start the notes application - instructions and user input
+
+    def import_notes(self):
+        """ method reads the notes.txt file adding values found to the notes list """
+        file_path = 'data/notes.txt'  # notes.txt is the file we want to read from
+        with open(file_path, "r") as file:  # using 'with' automatically closes the file once method has finished
+            counter = 0  # counter is used so that we can tell if a line is the title (1), or content (2)
+            title = ""  # variable stores the notes title
+            content = ""  # variable stores the notes content
+            for line in file:  # loop through found lines
+                counter += 1  # increment the counter, so that its always 1 or 2
+                if counter == 1:  # if one, we are on a note header
+                    title = line.strip()  # put the stripped line into the title variable
+                if counter == 2:  # if two we are on the notes content
+                    content = line.strip()  # put the stripped line into the content variable
+                    self.notes.append([title, content])  # a list object containing note title and content
+                    counter = 0  # reset the counter ready for the next two lines
 
     # Method starts off the notes feature, requesting user input
     def notes_start(self):
+        """ method starts the notes feature, requesting user input to create, edit or delete notes """
         while self.is_running:  # when while loop breaks, we return to the main module
             # display all of the current notes to the user
             self.stage = 1  # stage 1 is user selection, where user chooses what to do (create, edit, delete)
-            print("\nCurrent saved notes:")
+            if len(self.notes) > 0:  # check to ensure we have notes in the notes list
+                print("\nCurrent saved notes:")
+            else:
+                print("\n*** you currently have no notes! ***")
             for index in range(len(self.notes)):  # get the length of the notes list, getting all of the index values
                 self.output_note(index)  # pass the index value into the method to output the individual notes
 
@@ -38,8 +60,11 @@ class Notes:
                 self.add_note()  # method adds a new note
 
             elif action_choice == "2":  # user wants to edit a note
-                self.stage = 3  # user editing note
-                self.edit_note()  # method edits an existing note
+                if len(self.notes) > 0:  # check to ensure we have notes in the notes list
+                    self.stage = 3  # user editing note
+                    self.edit_note()  # method edits an existing note
+                else:
+                    print("\n***** There are no notes to edit! *****")
 
             elif action_choice == "3":  # user want to delete a note
                 if len(self.notes) > 0:  # check to ensure we have notes in the notes list
@@ -50,6 +75,7 @@ class Notes:
 
     # method displays an individual note
     def output_note(self, note_number):
+        """ Method prints the note associated with the note number passed as the argument """
         frontend_note_number = note_number + 1  # removes the '0' so note numbers start at 1
         print(config.Style.bold, config.Style.underline)  # make title bold and underlined
         print("{}.{}".format(frontend_note_number, self.notes[note_number][0]))
@@ -65,6 +91,7 @@ class Notes:
 
     # method sanitises the user input, checking to see if it's a valid input
     def input_check(self):
+        """ Method handles the user input ensuring its valid """
         user_input = ""  # ensure user_input is cleared
         while self.is_running:  # while loop ensures user gives a valid input
             if self.stage == 1:  # user in add, edit or delete selection stage
@@ -122,6 +149,7 @@ class Notes:
 
     # Method checks to see if user has input "help" or "exit" or simply a typo
     def help_exit_check(self, user_input):
+        """ Handles the user input, checking for exit and help keywords. Exit quits app, help provides instructions """
         if user_input.lower() == "exit":
             self.is_running = False  # statement breaks input while loops, causing notes feature to exit to main menu
         elif user_input.lower() == "help":  # if/else statement controls tailored help messages
@@ -143,6 +171,7 @@ class Notes:
 
     #  method adds a note to the notes list
     def add_note(self):
+        """ Method adds a new note to the class notes list, prompting user for new title and content """
         while self.is_running:  # while loop ensures user gives a valid input
             self.stage = 2.1  # title creation stage
             title = self.input_check()  # get the sanitised user input
@@ -162,6 +191,7 @@ class Notes:
 
     # method edits an existing notes content
     def edit_note(self):
+        """ Method allows a user to edit an existing note, prompting user for note number and new content """
         while self.is_running:  # while loop ensures user gives a valid input
             self.stage = 3.1  # provide user with a list of notes with their number and title
             print("\nNotes which can be edited:")
@@ -187,6 +217,7 @@ class Notes:
 
     # method deletes an existing note
     def delete_note(self):
+        """ Method allows a user to delete an existing note, prompting user for note number to delete """
         while self.is_running:  # while loop ensures user gives a valid input
             # provide user with a list of notes with their number and title
             print("\nNotes which can be deleted:")
@@ -206,10 +237,17 @@ class Notes:
 
     # method returns a list containing all of the current notes index numbers (+1) as string values
     def valid_note_numbers(self):
+        """ Method provides a dynamic list of note numbers """
         list_length = len(self.notes) + 1  # get length of notes and add 1 so that all note numbers are included
         list_indexes = list(range(1, list_length))  # create a new list from 1 to list_length
         return list(map(str, list_indexes))  # use map to convert list entries from int to strings
 
-    # method saves the memory value into the config.py file
+    # method updates the notes.txt file with the current notes
+    # provides persistent data across sessions so users data is always saved and retrievable
     def save_notes(self):
-        config.notes_dict = self.notes  # memory_value variable in config.py given current memory value
+        """ Method saves the users current notes to the notes.txt file """
+        updated_notes = open('data/notes.txt', 'w')  # open notes.txt file in write mode
+        for line in self.notes:  # loop through each value in the schedule
+            updated_notes.write(line[0] + "\n")  # write note title on separate line
+            updated_notes.write(line[1] + "\n")  # write note content on separate line
+        updated_notes.close()  # close the file as we are done writing to it

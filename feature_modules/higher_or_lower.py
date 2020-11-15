@@ -1,11 +1,14 @@
 # Class creates the higher or lower game once instantiated.
 # Allows user to input a sentence and get the correctly formatted sentence back
 
-import random  # random module used to generate a random entry from a tuple of numbers
+from random import choice  # random module used to generate a random entry from a list of words. From is used as we
+# only need the choice function from the random module. We can also now refer to the choice function as .choice() not
+# random.choice(), allowing code to be more concise
 import config  # config module gives access to global styling
 
 
 class HigherLower:
+    """ Class creates the higher or lower game where user guesses if the next random number will be higher or lower"""
     def __init__(self):  # set variables when class initialised
         self.is_running = True  # variable contains program on or off state, always start as True
         self.replay = True  # variable used to control if user is asked if they want to retry the game
@@ -25,8 +28,9 @@ class HigherLower:
 
         # method is used to start the application, and guide the user through
     def higher_lower_start(self):
+        """ method starts the higher or lower game, prompting user inputs to check against a random number """
         while self.is_running:  # when this while loop breaks, we return to the main module
-            self.random_number = random.choice(self.number_tuple)  # get a random entry from the number tuple
+            self.random_number = choice(self.number_tuple)  # get a random entry from the number tuple
             print("\n===========================================")  # divide to break up the text between rounds
             print("You have won {} in a row, you need 3 to win!".format(
                 self.win_counter))  # let user know current wins
@@ -50,6 +54,7 @@ class HigherLower:
 
     # method checks to ensure correct string is entered by user - a valid in range integer
     def input_check(self):
+        """ Method handles the user input ensuring its valid """
         user_input = ""  # ensure user_input is cleared
         while self.is_running:  # while loop ensures user gives a valid input
             user_input = input(": ")
@@ -67,6 +72,7 @@ class HigherLower:
 
     # method checks user input for "exit" or "help" keywords, providing descriptive feedback
     def help_exit_check(self, user_input):
+        """ Handles the user input, checking for exit and help keywords. Exit quits app, help provides instructions """
         if user_input.lower() == "exit":
             self.replay = False  # ensure user doesnt get asked to replay quiz at the end
             self.is_running = False  # statement breaks input while loops
@@ -78,8 +84,10 @@ class HigherLower:
 
     # method takes in the users guess of higher or lower, and compares it to the current random number
     def higher_or_lower_check(self, user_guess):
+        """ Method takes in users guess as an argument and checks it against the random number.
+        Updates score based on the result """
         # generate a second random number to see if it was higher or lower than the first
-        self.second_random_number = random.choice(self.number_tuple)
+        self.second_random_number = choice(self.number_tuple)
         print("\nThe second number is {}".format(self.second_random_number))
         if user_guess == 1:  # user chose higher
             if self.random_number < self.second_random_number:
@@ -96,13 +104,14 @@ class HigherLower:
                 print("The number was lower, you win!\n")
                 self.win_counter += 1
             elif self.random_number == self.second_random_number:
-                print("The number was equal, That's a tie!")
+                print("The number was equal, that's a tie!")
             else:
                 print("The number was higher, you lose this time!\n")
                 self.win_counter = 0  # reset the win counter back to zero
 
     # method checks to see if user wants to replay the game after its finished
     def replay_check(self):
+        """ Method asks user if they would like to replay the game """
         while self.replay:
             print("\nWould you like to play again?")
             replay = input("Enter '1' for yes, '2' for no: ")

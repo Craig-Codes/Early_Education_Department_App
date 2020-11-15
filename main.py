@@ -5,6 +5,8 @@ import config  # config module used for access to global styling and shared glob
 
 # class contains the menu and all of the methods necessary to prompt user and open the applications features
 class Menu:
+    """ Menu class provides user with feature module choices, prompting user for an input"""
+
     def __init__(self):
         self.program_state = "menu"  # variable contains which feature is open and in use
         self.features = ("1. Calculator", "2. Daily Schedule", "3. Difficult Word Checker", "4. Higher or Lower",
@@ -12,6 +14,7 @@ class Menu:
 
     # method provides the starting instructions to the user
     def menu_start(self):
+        """ Starts the menu, providing general instructions to user """
         # Unicode characters used to make heading more interesting to children
         print(config.Style.purple, config.Style.bold, config.Style.underline)  # style text - purple, bold, underlined
         print("⟆𝜏Ꭿ⨍⨍𝖮ᖇᖱ⟆Ꮒ⫯ᖇ∈ ⋃ﬡ⫯ᨆ∈ᖇ⟆⫯𝜏Ⴘ ᕮᎯᖇ𝘭Ⴘ ᕮᕍυ⊂Ꭿ𝜏⫯𝖮ﬡ ↁ∈ᖰᎯᖇ𝜏ⲙ∈ﬡ𝜏".center(80), config.Style.end)
@@ -22,6 +25,7 @@ class Menu:
 
     # method starts a loop to get the user to select a feature
     def menu_display(self):
+        """ Displays the different features available to the user, allowing user to input choice """
         while self.program_state == "menu":  # while program state is "menu", keep looping until user chooses a feature
             print('\nChoose an activity from the bellow list by typing in its number:', config.Style.bold)
             print(*self.features, sep="\n")  # use * to remove parenthesis and separate by new line
@@ -36,17 +40,19 @@ class Menu:
 
     # method handles input errors, "exit" and "help" input
     def help_exit_check(self, user_input):
+        """ Handles the user input, checking for exit and help keywords. Exit quits app, help provides instructions """
         self.program_state = "menu"
         if user_input.lower() == "exit":
             print("Have a great day! \U0000263B")
             exit()  # quit the application
         elif user_input.lower() == "help":  # if/else statement controls tailored help messages
-            print("You are currently in the application menu. To enter an activity type its number")
+            print("You are currently in the application menu. To enter an activity, type its number (1-7)")
         else:
             print("Try typing in the activity number again \U0001F44D")
 
     # method controls the importing and opening of different app modules to give user access to feature modules
     def open_module(self, module):
+        """ Takes user feature choice and imports then opens relevant module """
         self.program_state = module.lower()  # make any input lowercase to remove case sensitivity issues on keywords
 
         if self.program_state == "1":
@@ -62,8 +68,8 @@ class Menu:
             schedule.Schedule()
         elif self.program_state == "3":
             # import the spell checker module and start it
-            from feature_modules import spell_checker
-            spell_checker.Checker()  # create a new instance of the hangman game (enter hangman.py script)
+            from feature_modules import checker
+            checker.Checker()  # create a new instance of the hangman game (enter hangman.py script)
         elif self.program_state == "4":
             # import the higher_or_lower module and start it
             from feature_modules import higher_or_lower

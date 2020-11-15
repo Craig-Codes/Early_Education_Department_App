@@ -1,11 +1,69 @@
 # Class creates a quiz once instantiated
 # Allows user to select a subject to take a quiz on, then provides five randomly ordered questions and a score
 
-import random  # import the random module - used to randomise question order to increase replay value
+from random import randrange  # random module used to generate a random number from a range of numbers. From is used
+# as we only need the randrange function from the random module. We can also now refer to the choice function as
+# .randrange() not random.randrange(), allowing code to be more concise
 import config  # config module used to get question data and gives access to global styling
+
+# quiz questions and answers -  add questions and answers here to expand the quiz
+maths_questions = [["What is the sum of 2 x 2?"],
+                   ["What is the sum of 3 + 3?"],
+                   ["What is the sum of 23 - 3?"],
+                   ["What is the sum of 10 / 2?"],
+                   ["How many tens are in 32?"]]
+
+maths_answers = [[["1. 4"], ["2. 5"], ["3. 6"], ["4. 12"]],
+                 [["1. 3"], ["2. 6"], ["3. 9"], ["4. 12"]],
+                 [["1. 18"], ["2. 19"], ["3. 20"], ["4. 21"]],
+                 [["1. 1"], ["2. 2"], ["3. 4"], ["4. 5"]],
+                 [["1. 1"], ["2. 2"], ["3. 3"], ["4. 30"]]]
+
+maths_correct_answers = [["1"],
+                         ["2"],
+                         ["3"],
+                         ["4"],
+                         ["3"]]
+
+history_questions = [["What type of flower is worn on Remembrance Day in Britain?"],
+                     ["How many wives did King Henry VIII have?"],
+                     ["What year did World War 2 begin?"],
+                     ["Julius Caesar was the leader of which army?"],
+                     ["What country did William the Conqueror come from?"]]
+
+history_answers = [[["1. Rose"], ["2. Lily"], ["3. Orchid"], ["4. Poppy"]],
+                   [["1. 2"], ["2. 4"], ["3. 6"], ["4. 8"]],
+                   [["1. 1914"], ["2. 1918"], ["3. 1939"], ["4. 1945"]],
+                   [["1. Roman"], ["2. British"], ["3. Viking"], ["4. Mongol"]],
+                   [["1. England"], ["2. France"], ["3. Belgium"], ["4. Brazil"]]]
+
+history_correct_answers = [["4"],
+                           ["3"],
+                           ["3"],
+                           ["1"],
+                           ["2"]]
+
+geography_questions = [["What is the capital of England?"],
+                       ["Which is the largest country in the world?"],
+                       ["Which Italian city is famous for its canals?"],
+                       ["Dublin is the largest city in which country?"],
+                       ["Which large river flows through London?"]]
+
+geography_answers = [[["1. Birmingham"], ["2. Manchester"], ["3. Leeds"], ["4. London"]],
+                     [["1. Canada"], ["2. Russia"], ["3. Iceland"], ["4. Argentina"]],
+                     [["1. Venice"], ["2. Rome"], ["3. Palermo"], ["4. Pisa"]],
+                     [["1. Wales"], ["2. Scotland"], ["3. Ireland"], ["4. England"]],
+                     [["1. Thames"], ["2. Trent"], ["3. Severn"], ["4. Clyde"]]]
+
+geography_correct_answers = [["4"],
+                             ["2"],
+                             ["1"],
+                             ["3"],
+                             ["1"]]
 
 
 class Quiz:
+    """ Class creates the quiz, allowing for users to take a short revision quiz on different subjects """
     # set variables when class initialised, taking arguments from the config.py file, via main.py
     def __init__(self):
 
@@ -14,17 +72,17 @@ class Quiz:
         self.replay = True  # variable used to control if user is asked if they want to retry quiz
 
         # arrays store the input from the config.py file, allowing the quiz to be easily modified and updated
-        self.question_bank_maths = config.maths_questions
-        self.answer_bank_maths = config.maths_answers
-        self.correct_maths = config.maths_correct_answers
+        self.question_bank_maths = maths_questions
+        self.answer_bank_maths = maths_answers
+        self.correct_maths = maths_correct_answers
 
-        self.question_bank_history = config.history_questions
-        self.answer_bank_history = config.history_answers
-        self.correct_history = config.history_correct_answers
+        self.question_bank_history = history_questions
+        self.answer_bank_history = history_answers
+        self.correct_history = history_correct_answers
 
-        self.question_bank_geography = config.geography_questions
-        self.answer_bank_geography = config.geography_answers
-        self.correct_geography = config.geography_correct_answers
+        self.question_bank_geography = geography_questions
+        self.answer_bank_geography = geography_answers
+        self.correct_geography = geography_correct_answers
 
         self.current_question_bank = []  # empty placeholder array used to store questions
         self.current_answer_bank = []  # empty placeholder array used to store answers
@@ -42,6 +100,7 @@ class Quiz:
 
     # method is used to start the quiz, guiding the user throughout
     def quiz_start(self):
+        """ method starts the quiz, requesting user inputs to generate the quiz and answer questions """
         while self.is_running:  # when this while loop breaks, we return to the main module
             self.stage = 1  # stage 1 is the setup stage - user must choose the subject to take the quiz about
             print("\nSelect the subject you would like to take a quiz about?")
@@ -58,7 +117,7 @@ class Quiz:
             # while loop is used to keep the quiz going until the user completes all of the questions in a random order
             while len(self.current_question_bank) > 0:  # while we still have questions in the question bank
                 # get a random number between 0 and question_bank length - allows for dynamic question numbers
-                random_number = random.randrange(0, len(self.current_question_bank))
+                random_number = randrange(0, len(self.current_question_bank))
                 self.question(random_number)  # get a random question from the question bank
                 question_answer = self.input_check()  # method used to get users question answer and check for keywords
                 if question_answer == "exit":  # check for the "exit" keyword.
@@ -73,6 +132,7 @@ class Quiz:
 
     # method populates the current question, answer and correct arrays
     def quiz_builder(self, subject_selection):
+        """ Method takes in the users chosen subject as an argument and generates a quiz about that subject """
         if subject_selection == "1":
             # make copies of the current arrays so that we can mutate the data without effecting the originals
             self.current_question_bank = self.question_bank_maths.copy()
@@ -87,8 +147,9 @@ class Quiz:
             self.current_answer_bank = self.answer_bank_geography.copy()
             self.current_correct = self.correct_geography.copy()
 
-    # method outputs the question and possible answers to the user
+    # method outputs the question and possible answers to the user using the random number as the list index position
     def question(self, random_number):
+        """ Method takes in a random number as an argument, and prints a question and its potential answers """
         # get the length of the question so we can use it to create a neat barrier from the last question
         question = str(self.current_question_bank[random_number])  # get the question as a string
         print("\n" + ("-" * (len(question) - 4)), config.Style.bold)
@@ -100,6 +161,8 @@ class Quiz:
 
     # method checks to see if user got the question right, incrementing to the counter if so
     def answer_check(self, random_number, user_answer):
+        """ Method takes in the users answer as an argument and checks it against the correct answer based on the
+        random number argument """
         self.questions_taken += 1  # increment the number of questions the user has attempted
         # if the users answer is the answer in the current_correct array for the current random number slot
         if user_answer in self.current_correct[random_number]:
@@ -112,12 +175,15 @@ class Quiz:
 
     # method removes the random question from all of the associated current arrays so that its doesnt appear again
     def question_remove(self, question_number):
+        """ Method removes a question and its associated answers from the question bank once its been used,
+        based on the question number argument """
         del self.current_question_bank[question_number]  # delete question from array using its index position
         del self.current_answer_bank[question_number]
         del self.current_correct[question_number]
 
     # method checks to ensure correct string is entered by user
     def input_check(self):
+        """ Method handles the user input ensuring its valid whilst looking for keywords 'exit' and 'help' """
         user_input = ""  # ensure user_input is cleared
         while self.is_running:  # while loop ensures user gives a valid input
             if self.stage == 1:  # if user is at quiz selection
@@ -148,6 +214,7 @@ class Quiz:
 
     # method checks to see if a user has answered 5 questions, breaking the is_running while loop if so
     def completed_check(self):
+        """ Method checks to see if the user has completed all the questions on a subject and provides a score if so """
         if len(self.current_question_bank) == 0:  # if zero, no questions are remaining
             print("\nWell done for taking the quiz!")
             print(config.Style.bold)  # add bold styling to final score line
@@ -158,6 +225,7 @@ class Quiz:
 
     # method checks to see if user wants to replay the game after its finished
     def replay_check(self):
+        """ Method asks user if they would like to replay the quiz """
         while self.replay:
             print("\nWould you like to try again?")
             replay = str(input("Enter '1' for yes, '2' for no: "))

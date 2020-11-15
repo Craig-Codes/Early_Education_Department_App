@@ -5,6 +5,7 @@ import config  # config module used to store calculator data and gives access to
 
 
 class Checker:
+    """ Class creates the word checker, allowing for specified words to replace other words"""
     def __init__(self):  # set variables when class initialised
         self.is_running = True  # variable contains program on or off state, always start as True
         self.sentence = ""  # sentence used to store the sentence a user inputs
@@ -20,6 +21,7 @@ class Checker:
 
     # method is used to start the application, and guide the user through
     def checker_start(self):
+        """ method starts the word checker, requesting user inputs to check against specified words """
         while self.is_running:  # when this while loop breaks, we return to the main module
             print("\nType in the sentence you want to check for difficult words and have corrected")
             print('**** For this prototype please type "A structure which humans occupy" ****')
@@ -31,6 +33,7 @@ class Checker:
 
     # method checks to ensure correct string is entered by user
     def input_check(self):
+        """ Method handles the user input ensuring its valid """
         user_input = ""  # ensure user_input is cleared
         while self.is_running:  # while loop ensures user gives a valid input
             user_input = input(": ")
@@ -43,6 +46,7 @@ class Checker:
 
     # method checks user input for "exit" or "help" keywords, providing descriptive feedback
     def help_exit_check(self, user_input):
+        """ Handles the user input, checking for exit and help keywords. Exit quits app, help provides instructions """
         if user_input.lower() == "exit":
             self.is_running = False  # statement breaks input while loops
         elif user_input.lower() == "help":  # if/else statement controls tailored help messages
@@ -52,6 +56,7 @@ class Checker:
 
     # method searches the sentence for a word, and replaces it with the correct word
     def word_swap(self, sentence):
+        """ Method takes the user input as an argument, checking to see if it can be modified / improved """
         no_swap = True  # variable used to signal if the input sentence changes
         modified_word = ""  # variable holds the new replacement word
         original_word = ""  # variable holds the original wrong word
