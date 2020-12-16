@@ -2,6 +2,7 @@
 # Allows user to create and edit notes to use to help throughout the day
 
 import textwrap  # textwrap module is used to nicely wrap long text to multiple lines
+import os  # operating system module used to easily interact with the file structure
 import config  # config module used to store note data and gives access to global styling
 
 
@@ -17,16 +18,20 @@ class Notes:
 
         # stage is used to determine which input stage calculator is on,
         self.stage = 1  # required for the "help" functionality and memory functions
-        self.import_notes()
+
+        self.import_notes()  # pull in the current notes from the notes.txt file
         self.notes_start()  # start the notes application - instructions and user input
 
     def import_notes(self):
         """ method reads the notes.txt file adding values found to the notes list """
-        file_path = 'data/notes.txt'  # notes.txt is the file we want to read from
-        with open(file_path, "r") as file:  # using 'with' automatically closes the file once method has finished
+        # os.path.join allows the given file path to work on windows, linux and mac systems
+        # Windows systems use '\' between directories, but linux and mac use '/'. os.path.join automatically
+        # works this out based on the users operating system, generating the correct file path
+        file = os.path.join("data", "notes.txt")  # notes.txt is the file we want to read from the data directory
+
+        with open(file, "r") as file:  # using 'with' automatically closes the file once method has finished
             counter = 0  # counter is used so that we can tell if a line is the title (1), or content (2)
             title = ""  # variable stores the notes title
-            content = ""  # variable stores the notes content
             for line in file:  # loop through found lines
                 counter += 1  # increment the counter, so that its always 1 or 2
                 if counter == 1:  # if one, we are on a note header
@@ -40,19 +45,18 @@ class Notes:
     def notes_start(self):
         """ method starts the notes feature, requesting user input to create, edit or delete notes """
         while self.is_running:  # when while loop breaks, we return to the main module
-            # display all of the current notes to the user
             self.stage = 1  # stage 1 is user selection, where user chooses what to do (create, edit, delete)
             if len(self.notes) > 0:  # check to ensure we have notes in the notes list
                 print("\nCurrent saved notes:")
             else:
                 print("\n*** you currently have no notes! ***")
+            # display all of the current notes to the user
             for index in range(len(self.notes)):  # get the length of the notes list, getting all of the index values
                 self.output_note(index)  # pass the index value into the method to output the individual notes
 
             # user selects if they want to add, edit or delete a note
             action_choice = self.input_check()  # input_check method checks for keywords and ensures correct user input
             if action_choice == "exit":  # check for the "exit" keyword.
-                print("Goodbye from notes! \U0000263B")
                 break  # if "exit" found we break the loop, leaving this feature module
 
             elif action_choice == "1":  # user wants to add a note
@@ -152,6 +156,7 @@ class Notes:
         """ Handles the user input, checking for exit and help keywords. Exit quits app, help provides instructions """
         if user_input.lower() == "exit":
             self.is_running = False  # statement breaks input while loops, causing notes feature to exit to main menu
+            print("Goodbye from notes! \U0000263B")
         elif user_input.lower() == "help":  # if/else statement controls tailored help messages
             if self.stage == 1:
                 print("You are in the notes feature! "
@@ -176,12 +181,10 @@ class Notes:
             self.stage = 2.1  # title creation stage
             title = self.input_check()  # get the sanitised user input
             if title == "exit":  # check for the "exit" keyword.
-                print("Goodbye from notes! \U0000263B")
                 break  # if "exit" found we break the loop, leaving this feature module
             self.stage = 2.2  # content creation stage
             content = self.input_check()
             if content == "exit":
-                print("Goodbye from notes! \U0000263B")
                 break
 
             self.notes.append([title, content])  # add the new note to the notes list - create note from user inputs
@@ -200,7 +203,6 @@ class Notes:
 
             note_number = self.input_check()  # get the sanitised user input - user chooses note number to delete
             if note_number == "exit":  # check for the "exit" keyword.
-                print("Goodbye from notes! \U0000263B")
                 break  # if "exit" found we break the loop, leaving this feature module
             note_number = int(note_number) - 1  # we now have the users selected note and its index position
             # remove 1 from note number to get the actual index number (arrays start at 0 not 1)
@@ -208,7 +210,6 @@ class Notes:
             self.stage = 3.2  # user is in the note editing stage
             note_content = self.input_check()  # get the sanitised user input
             if note_content == "exit":  # check for the "exit" keyword.
-                print("Goodbye from notes! \U0000263B")
                 break  # if "exit" found we break the loop, leaving this feature module
             self.notes[note_number][1] = note_content  # assign the new content to the note
             self.save_notes()  # method saves notes to config.py file allowing data to persist during session
@@ -226,7 +227,6 @@ class Notes:
 
             note_number = self.input_check()  # get the sanitised user input - ensures number matches a note number
             if note_number == "exit":  # check for the "exit" keyword.
-                print("Goodbye from notes! \U0000263B")
                 break  # if "exit" found we break the loop, leaving this feature module
             note_number = int(note_number) - 1
             # remove 1 from note number to get the actual index number (arrays start at 0 not 1)
@@ -246,8 +246,9 @@ class Notes:
     # provides persistent data across sessions so users data is always saved and retrievable
     def save_notes(self):
         """ Method saves the users current notes to the notes.txt file """
-        updated_notes = open('data/notes.txt', 'w')  # open notes.txt file in write mode
-        for line in self.notes:  # loop through each value in the schedule
+        file = os.path.join("data", "notes.txt")  # notes.txt is the file we want to write from the data directory
+        updated_notes = open(file, 'w')  # open notes.txt file (from any operating system) in write mode
+        for line in self.notes:  # loop through each value in notes
             updated_notes.write(line[0] + "\n")  # write note title on separate line
             updated_notes.write(line[1] + "\n")  # write note content on separate line
         updated_notes.close()  # close the file as we are done writing to it

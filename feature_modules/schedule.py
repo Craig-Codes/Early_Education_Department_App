@@ -1,6 +1,7 @@
 # Class creates the users schedule once instantiated
 # User can select a period and edit it to reflect a schedule change
 
+import os  # operating system module used to easily interact with the file structure
 import config  # config module gives access to global styling
 
 
@@ -28,8 +29,13 @@ class Schedule:
     def import_schedule(self):
         """ method reads the schedule.txt file, adding values found to the schedule dictionary """
         schedule_list = []  # list to hold all found lines inside the schedule.txt file
-        file_path = 'data/schedule.txt'  # schedule.txt is the file we want to read from
-        with open(file_path, "r") as file:  # using 'with' automatically closes the file once method has finished
+
+        # os.path.join allows the given file path to work on windows, linux and mac systems
+        # Windows systems use '\' between directories, but linux and mac use '/'. os.path.join automatically
+        # works this out based on the users operating system, generating the correct file path
+        file = os.path.join("data", "schedule.txt")  # notes.txt is the file we want to read from the data directory
+
+        with open(file, "r") as file:  # using 'with' automatically closes the file once method has finished
             for line in file:  # loop through found lines
                 schedule_list.append(line.strip())  # loop through each line in the file, and add it to the list.
 
@@ -133,7 +139,8 @@ class Schedule:
     # provides persistent data across sessions so users data is always saved and retrievable
     def save_schedule(self):
         """ Method saves the users current schedule to the schedule.txt file """
-        updated_schedule = open('data/schedule.txt', 'w')  # open schedule.txt file in write mode
+        file = os.path.join("data", "schedule.txt")  # schedule.txt is the file we want to write from the data directory
+        updated_schedule = open(file, 'w')  # open schedule.txt file in write mode
         for period, lesson in self.schedule.items():  # loop through each value in the schedule
             updated_schedule.write(lesson + "\n")  # write each lesson to the schedule.txt file
         updated_schedule.close()  # close the file as we are done writing to it

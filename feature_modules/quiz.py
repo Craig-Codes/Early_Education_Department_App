@@ -66,7 +66,6 @@ class Quiz:
     """ Class creates the quiz, allowing for users to take a short revision quiz on different subjects """
     # set variables when class initialised, taking arguments from the config.py file, via main.py
     def __init__(self):
-
         self.is_running = True  # variable contains program on or off state, always start as True
         self.stage = 1  # stage is used to determine which input stage quiz is on, for the 'help' functionality
         self.replay = True  # variable used to control if user is asked if they want to retry quiz
@@ -193,7 +192,7 @@ class Quiz:
                     self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                     user_input = user_input.lower()  # .lower ensures the input is returned in correct format
                 elif user_input.lower() == "help":  # if/else statement controls tailored help messages
-                    print("\nYou are in the revision quiz! type in a number to choose the quiz topic")
+                    print("\nYou are in the revision quiz! Type in a number to choose the quiz topic")
                 elif user_input == "1" or user_input == "2" or user_input == "3":
                     break
                 else:  # user didnt enter "help" or "exit" but put in more than one letter

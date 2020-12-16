@@ -54,6 +54,10 @@ class Calculator:
 
             self.stage = 4  # calculate the answer
             self.total = self.calculate()  # calculate the inputs
+            if self.total == "impossible":  # check to avoid divide by zero runtime error
+                print("Cannot divide by zero, try another sum")
+                continue  # go back to the start of the run loop
+
             # output the whole sum to the user, the int_check method is used to remove unnecessary decimal points
             print(config.Style.bold + "\n{} {} {} = {}"
                   .format(self.int_check(self.first_input), self.operator, self.int_check(self.second_input),
@@ -122,7 +126,11 @@ class Calculator:
         elif self.operator == "-":
             return self.first_input - self.second_input
         elif self.operator == "/":
-            return self.first_input / self.second_input
+            # validation check to avoid runtime error when dividing by zero
+            if self.second_input == 0:  # dividing by zero causes an error in python
+                return "impossible"  # flag used to detect an error
+            else:
+                return self.first_input / self.second_input
         elif self.operator == "*":
             return self.first_input * self.second_input
 

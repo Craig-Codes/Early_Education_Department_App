@@ -1,6 +1,7 @@
 # Class creates the hangman game once instantiated.
 # Users are given 5 attempts to guess a random word
 
+import os  # operating system module used to easily interact with the file structure
 from random import choice  # random module used to generate a random entry from a list of words. From is used as we
 # only need the choice function from the random module. We can also now refer to the choice function as .choice() not
 # random.choice(), allowing code to be more concise
@@ -32,8 +33,13 @@ class Hangman:
 
     # method imports the word_list.txt.txt data into the feature module
     def word_import(self):
-        file_path = "data/word_list.txt"
-        with open(file_path, "r") as file:
+        # os.path.join allows the given file path to work on windows, linux and mac systems
+        # Windows systems use '\' between directories, but linux and mac use '/'. os.path.join automatically
+        # works this out based on the users operating system, generating the correct file path
+        file = os.path.join("data", "word_list.txt")
+        # word_list.txt is the file we want to read from the data directory
+
+        with open(file, "r") as file:
             for line in file:
                 # loop through each line in the file, and add it to the list.
                 self.word_list.append(line.strip())
@@ -58,7 +64,7 @@ class Hangman:
                 print("Goodbye from the hangman game! \U0000263B")
                 self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                 break  # if "exit" found we break the loop, leaving this feature module
-            self.guess_number(letter_guess)  # method checks if the letter is in the self.word variable
+            self.guessed_letter_check(letter_guess)  # method checks if the letter is in the self.word variable
             self.guessed_letters.append(letter_guess)  # add the guessed letter to the guessed letter list
             self.word_mask()  # reveal correctly guessed letters in the guessed_word variable, everything else is a '*'
             self.completed_check()  # method checks to see if word has been guessed correctly or all turns used
@@ -95,7 +101,7 @@ class Hangman:
         return user_input  # return the valid input
 
     # method checks to see if users guess is in the random word, if not decreases the guess_counter
-    def guess_number(self, user_input):
+    def guessed_letter_check(self, user_input):
         """ Method checks user input argument to see if its a valid character in the word they are guessing.
         If not the counter decreases """
         if user_input not in self.word:
@@ -109,7 +115,7 @@ class Hangman:
                   config.Style.end, config.Style.purple)  # winning message in bold
             self.is_running = False  # setting variable to false breaks the play loop
         elif self.guess_counter == 0:  # if guessed more than 8 times player loses and game ends
-            print(config.Style.bold, "\n*** You didnt manage to guess the word this time! ***",
+            print(config.Style.bold, "\n*** You didn't manage to guess the word this time! ***",
                   config.Style.end, config.Style.purple)  # losing messaged in bold
             print("The word was {}".format(self.word))
             self.is_running = False  # variable breaks the input loops
@@ -126,7 +132,7 @@ class Hangman:
                 self.word_letters = list(self.word)  # list holds a list of all the random words letters
                 self.guessed_word = ""  # string holds the users correct guesses
                 self.guessed_letters = []  # list holds all guessed letters
-                self.guess_counter = 5  # re-set try counter to 5
+                self.guess_counter = 8  # re-set try counter to 5
                 self.is_running = True  # re-enter the start loop
                 self.hangman_start()  # restart the game
             elif replay == "2" or replay.lower() == "exit":  # user wants to leave the game

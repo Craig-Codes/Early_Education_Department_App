@@ -12,7 +12,9 @@ class HigherLower:
     def __init__(self):  # set variables when class initialised
         self.is_running = True  # variable contains program on or off state, always start as True
         self.replay = True  # variable used to control if user is asked if they want to retry the game
-        self.win_counter = 0  # variable stores number of consecutive wins, 3 in a row is required to win
+
+        self.player_score = 0  # variable stores number of consecutive wins player is on, 3 in a row is required to win
+        self.computer_score = 0  # variable stores number of consecutive wins player is on
 
         self.number_tuple = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)  # tuple stores list of all numbers user can choose
         self.random_number = 0  # variable holds a random number which is set when the game starts
@@ -33,22 +35,30 @@ class HigherLower:
             self.random_number = choice(self.number_tuple)  # get a random entry from the number tuple
             print("\n===========================================")  # divide to break up the text between rounds
             print("You have won {} in a row, you need 3 to win!".format(
-                self.win_counter))  # let user know current wins
+                self.player_score))  # let user know current wins
+            print("The computer has won {} in a row, it needs 3 to win!".format(
+                self.computer_score))  # let user know current wins
             print("\nThe number is {}".format(
                 self.random_number))  # number user needs to guess higher or lower against
             print("\nWill the next number be higher or lower?")
-            print("Enter '1' for Higher, and '2' for Lower")
-            number_guess = self.input_check()  # method handles the input, checking if valid and for keywords help/exit
-            if number_guess == "exit":  # check for the "exit" keyword.
+            print("Enter '1' for higher, and '2' for lower")
+            user_guess = self.input_check()  # method handles the input, checking if valid and for keywords help/exit
+            if user_guess == "exit":  # check for the "exit" keyword.
                 print("Goodbye from the higher or lower game! \U0000263B")
                 self.replay = False  # ensure user doesnt get asked to replay quiz at the end
                 break  # if "exit" found we break the loop, leaving this feature module
+            computer_guess = self.get_computer_selection()  # generate a random guess for the computer
+            print("The computer has guessed '{}'".format(computer_guess))
             self.higher_or_lower_check(
-                number_guess)  # if input is valid and not a keyword, method checks if user wins
-            if self.win_counter == 3:  # variable incremented each time user wins a game, if three in a row, game ends
+                user_guess, computer_guess)  # if input is valid and not a keyword, method checks if user wins
+            if self.player_score == 3:  # variable incremented each time user wins a game, if three in a row, game ends
                 print(config.Style.bold, "*** Well done you have won 3 times in a row, and beaten the game! ***",
                       config.Style.end, config.Style.purple)  # winning message in bold
-                break  # exits the game after declaring the user a winner for winning 3 times in a row
+                break  # exits the game after declaring the user winner for winning 3 times in a row
+            elif self.computer_score == 3:  # variable incremented each time computer wins a game
+                print(config.Style.bold, "*** Unlucky, the computer has won 3 times in a row! ***",
+                      config.Style.end, config.Style.purple)  # winning message in bold
+                break  # exits the game after declaring the computer winner for winning 3 times in a row
         #  ask user if they want to play again- if yes game state is reset, if no, game exits
         self.replay_check()
 
@@ -82,32 +92,63 @@ class HigherLower:
         else:
             print("\nSomething went wrong, please try typing in the number again 👍")
 
-    # method takes in the users guess of higher or lower, and compares it to the current random number
-    def higher_or_lower_check(self, user_guess):
-        """ Method takes in users guess as an argument and checks it against the random number.
-        Updates score based on the result """
+    # method gets a random number selection for the computer choice
+    def get_computer_selection(self):
+        """ Method returns a random number, 1 or 2 for the computers choice """
+        number_choices = (1, 2)  # computer can either select 1 (higher) or 2 (lower)
+        return choice(number_choices)  # return a random value from number_choices tuple
+
+    # method takes in the users guess and computers guess of higher or lower, and compares them to the current
+    # random number to increment scores accordingly
+    def higher_or_lower_check(self, user_guess, computer_guess):
+        """ Method takes in users guess and computers guess as arguments and checks them against the random number and
+        each other to update the game scores based on the result """
         # generate a second random number to see if it was higher or lower than the first
         self.second_random_number = choice(self.number_tuple)
         print("\nThe second number is {}".format(self.second_random_number))
         if user_guess == 1:  # user chose higher
-            if self.random_number < self.second_random_number:
-                print("The number was higher, you win!\n")
-                self.win_counter += 1  # increment the win counter
-            elif self.random_number == self.second_random_number:
+            if self.random_number == self.second_random_number:
                 # if the numbers are the same, nothing happens to the win counter
-                print("The number was equal, That's a tie!")
+                print("Both numbers where equal, that's a tie!")
+            elif self.random_number < self.second_random_number and user_guess == computer_guess:
+                # if the computer and player both guessed the correct answer - no one wins the round
+                print("Both you and the computer were correct, that's a tie!")
+            elif self.random_number < self.second_random_number:
+                # player choose correct and computer choose opposite
+                print("The number was higher, you win!\n")
+                self.player_score += 1  # increment the win counter
+                self.computer_score = 0  # reduce computers score back to zero
+            elif self.random_number > self.second_random_number and user_guess == computer_guess:
+                # both player and computer are wrong
+                print("The number was lower, both you and the computer lose this round!\n")
+                self.player_score = 0  # increment the win counter
+                self.computer_score = 0  # reduce computers score back to zero
             else:
-                print("The number was lower, you lose this time!\n")
-                self.win_counter = 0  # reset the win counter back to zero
+                # player is wrong but computer is correct
+                print("The number was lower, you lose this time! The Computer won the round!\n")
+                self.player_score = 0  # reset the win counter back to zero
+                self.computer_score += 1  # if player lost and computer choose the opposite, the computer won
         elif user_guess == 2:  # user chose lower
-            if self.random_number > self.second_random_number:
-                print("The number was lower, you win!\n")
-                self.win_counter += 1
-            elif self.random_number == self.second_random_number:
+            if self.random_number == self.second_random_number:
                 print("The number was equal, that's a tie!")
+            elif self.random_number > self.second_random_number and user_guess == computer_guess:
+                # if the computer and player both guessed the correct answer
+                print("Both you and the computer were correct, that's a tie!")
+            elif self.random_number > self.second_random_number:
+                # if only the player guessed the correct answer
+                print("The number was lower, you win!\n")
+                self.player_score += 1
+                self.computer_score = 0  # reduce computers score back to zero
+            elif self.random_number < self.second_random_number and user_guess == computer_guess:
+                # both player and computer are wrong
+                print("The number was higher, both you and the computer lose this round!\n")
+                self.player_score = 0  # increment the win counter
+                self.computer_score = 0  # reduce computers score back to zero
             else:
-                print("The number was higher, you lose this time!\n")
-                self.win_counter = 0  # reset the win counter back to zero
+                # player is wrong but computer is correct
+                print("The number was higher, you lose this time! The Computer won the round!\n")
+                self.player_score = 0  # reset the win counter back to zero
+                self.computer_score += 1  # if player lost and computer choose the opposite, the computer won
 
     # method checks to see if user wants to replay the game after its finished
     def replay_check(self):
@@ -117,7 +158,8 @@ class HigherLower:
             replay = input("Enter '1' for yes, '2' for no: ")
             if replay == "1":
                 # if user wants to restart we need to reset game state and restart
-                self.win_counter = 0  # reset win counter back to zero
+                self.player_score = 0  # reset player win counter back to zero
+                self.computer_score = 0  # reset computer win counter back to zero
                 self.is_running = True  # re-enter the start loop
                 self.higher_lower_start()  # restart the game
             elif replay == "2" or replay.lower() == "exit":  # user wants to leave the game

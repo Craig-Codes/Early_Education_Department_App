@@ -4,3 +4,5 @@ Snacks
 Mom packed me a banana and an apple but i've still got a Mars bar in my backpack from last week
 After School
 I've got coding club on Wednesday, swimming on Thursday and chess on Friday!
+Test
+Persistent data test
