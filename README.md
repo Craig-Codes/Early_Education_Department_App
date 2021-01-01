@@ -15,3 +15,6 @@ The app's feature modules include:
   * Schedule - A daily schedule taking in data input by a teacher. Students can view their schedule, or edit it if required.
   
 This prototype app allowed me to practice the fundamentals of the Python language, focusing on creating clean modular code. I was able to further develop my Object Orientate Programming principles, whilst focusing on data structures.
+
+# Setup
+To run the project, fork this repository and run the main.py file. Due to some of the ASCII code titles used to make the app more visually apealing to children, the project works best when opened from pyCharm or the terminal. IDLE and VSCode do not read some the the icons correctly.
